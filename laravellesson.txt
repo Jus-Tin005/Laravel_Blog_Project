@@ -1,0 +1,153 @@
+1.Create Laravel
+
+	1.composer create-project --prefer-dist laravel/laravel blogproject
+	2. cd blogproject
+	3. code .
+
+2.create database
+	1.utf8_unicode_ci
+
+
+3.connect to database
+	1. .env file = 
+		DB_CONNECTION=mysql
+		DB_HOST=127.0.0.1
+		DB_PORT=3306
+		DB_DATABASE=blogproject
+		DB_USERNAME=root
+		DB_PASSWORD=
+
+	2.in migrations file = php artisan migrate
+
+4.run on web browser
+	php artisan serve (localhost:8000/127.0.0.1:8000/http://127.0.0.1:800/)
+
+
+5. Laravel CRUD
+
+	
+	tips:- table = lower letter and plural in the end / model = Capital letter and singular in starting
+
+	1.migrating table and create model(making table and model at the same time)
+	  php artisan make:model Post -m
+
+	2.in post table file =  $table->id();
+            			$table->string('title');
+            			$table->longText('content');
+            			$table->timestamps();
+
+
+	3.php artisan migrate
+
+
+6.Create (controller)resource controller = camel case
+	1.php artisan make:controller PostController
+	  php artisan make:controller PostController -r = (some need it and some don't.)
+
+	2.checking route
+	  php artisan route:list
+
+	3.defining route in web.php file
+	  Route::resource('posts', 'PostController');
+
+	4.rechecking route
+          php artisan route:list
+
+
+7. create files under views file.
+
+8.connecting route
+
+9.create form
+
+10. insert form data
+	1.  {{ csrf_field() }}  / @csrf  <!-- laravel security code --> 
+	2. protected $fillable = ['title','content']; = in Post.php
+	3.@error('title') is-invalid @enderror  = in create file
+	  @error('content') is-invalid @enderror
+
+	4. @error('title')    = in create file
+              <div class="invalid-feedback">{{ $message }}</div>
+           @enderror
+
+	 @error('content')
+             <div class="invalid-feedback">{{ $message }}</div>
+         @enderror
+
+	5. value="{{ old('title') }}"  = in create file
+	   {{ old('content') }}
+
+
+
+11.Read(fetch) data from database
+
+	1. $posts = Post::all();
+           return view('post.index',compact('posts')); 
+
+
+12.update data from database
+
+	1. $post = Post::find($id);
+	   return view('post.edit',compact('post'));
+
+	2. value="{{ $post -> title ?? old('title') }}
+	   {{ $post -> content ?? old('content') }}
+
+	3.@method('PUT') 
+
+	4. Post::find($id) -> update([
+            'title' => $request -> title,
+            'content' => $request -> content,
+           ]);
+	
+
+	5. $request -> validate([
+            'title' => 'required',
+            'content' => 'required',
+          ]);
+           Post::find($id) -> update([
+            'title' => $request -> title,
+            'content' => $request -> content,
+          ]);
+          return redirect('/posts')->with('successAlert','You have successfull updated!');
+
+	6. @if(Session(''))
+		codes
+	   @endif
+
+
+13.Delete data from database
+
+	1. {{ url('posts/' . $post->id) }}
+	2.  @csrf
+            @method('DELETE');
+
+	3. Post::find($id)->delete();
+           return redirect('/posts')->with('successAlert','You have successfully deleted!');
+
+	
+
+
+
+14. use route name and make pagination
+
+	1. {{ route('posts.create') }}
+	2. {{ route('posts.store') }}
+	3. {{ route('posts.edit',$post->id) }}
+	4. {{ route('posts.update',$post->id) }}
+
+
+	make pagination
+	1. all(); = paginate(5);
+	2. </table>
+           {{ $posts->links() }}
+
+
+
+Working main file = App/Http/Controllers/PostController.php
+		    App/Models/Post.php
+		    database/migrations
+	            resources/views/post 4 files
+		    routes/web.php
+		    .env
+		    
